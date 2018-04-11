@@ -13,10 +13,11 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/todos',(req,res)=>{
+app.post('/todos',authenticate,(req,res)=>{
 
 var todo = new Todo({
-	text: req.body.text
+	text: req.body.text,
+	_creator:req.user._id
 });
 
 todo.save().then((doc)=>{
@@ -27,7 +28,9 @@ todo.save().then((doc)=>{
 });
 
 app.get('/todos',(req,res)=>{
- Todo.find().then((todos)=>{
+ Todo.find({
+ 	_creator: req.user._id
+ }).then((todos)=>{
  	res.send({todos})
  },(e) => {
  	res.status(400).send(e);
@@ -74,6 +77,9 @@ app.patch('/todos/:id',(req,res)=>{
 		body.completed =false;
 		body.completedAt=null;
 	}
+
+	//findoneandupdate
+	
 
 	todo.findByIdAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
 		if(!todo){
