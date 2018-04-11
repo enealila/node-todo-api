@@ -1,3 +1,5 @@
+require('./config/config');
+
 const _= require('lodash');
 const express= require('express');
 const bodyParser= require('body-parser');
@@ -29,11 +31,11 @@ todo.save().then((doc)=>{
 
 app.get('/todos',(req,res)=>{
  Todo.find({
- 	_creator: req.user._id
+	_creator: req.user._id
  }).then((todos)=>{
- 	res.send({todos})
+	res.send({todos})
  },(e) => {
- 	res.status(400).send(e);
+	res.status(400).send(e);
  })
 });
 
@@ -79,7 +81,7 @@ app.patch('/todos/:id',(req,res)=>{
 	}
 
 	//findoneandupdate
-	
+
 
 	todo.findByIdAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
 		if(!todo){
